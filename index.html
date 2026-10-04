@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>El Sistema Solar | Guía Astronómica Interactiva</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Fondo de Estrellas y Meteoros Dinámico -->
+  <canvas id="starfield-canvas" class="starfield-bg" aria-hidden="true"></canvas>
+
+  <!-- Encabezado / Barra de Navegación -->
+  <header class="navbar">
+    <div class="logo">
+      <span class="icon">🪐</span>
+      <span class="logo-text">CosmoGuide</span>
+    </div>
+    <nav class="nav-container">
+      <ul class="nav-links">
+        <li><a href="#intro">Inicio</a></li>
+        <li><a href="#planetas">Planetas</a></li>
+        <li><a href="#simulador">Simulador</a></li>
+        <li><a href="#calculadora">Calculadora</a></li>
+        <li><a href="#comparador">Comparador</a></li>
+        <li><a href="#trivia">Trivia</a></li>
+        <li><a href="#datos">Curiosidades</a></li>
+      </ul>
+    </nav>
+    <div class="nav-actions">
+      <button id="sound-toggle-btn" class="nav-sound-btn" aria-label="Alternar sonido ambiental cósmico">
+        <span>🔇</span>
+        <span class="btn-text">Sonido Silenciado</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero" id="intro">
+    <div class="hero-content">
+      <span class="badge">Exploración Espacial Interactiva</span>
+      <h1>Maravillas del Sistema Solar</h1>
+      <p>Un recorrido inmersivo, visual y científico por los ocho mundos principales que orbitan alrededor de nuestra estrella, el Sol.</p>
+      <div class="hero-buttons">
+        <a href="#planetas" class="cta-button primary">Explorar Planetas</a>
+        <a href="#simulador" class="cta-button secondary">Ver Órbitas en Vivo</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Resumen Estadístico Dinámico -->
+  <section class="stats-bar" aria-label="Estadísticas del sistema solar">
+    <div class="stat-card">
+      <h3>8</h3>
+      <p>Planetas Principales</p>
+    </div>
+    <div class="stat-card">
+      <h3>4.600 M</h3>
+      <p>Años de Antigüedad</p>
+    </div>
+    <div class="stat-card">
+      <h3>290+</h3>
+      <p>Lunas Registradas</p>
+    </div>
+    <div class="stat-card">
+      <h3>1</h3>
+      <p>Estrella Central</p>
+    </div>
+  </section>
+
+  <!-- Sección 1: Los 8 Planetas (con Búsqueda y Filtros) -->
+  <main class="container" id="planetas">
+    <div class="section-title">
+      <h2>Los 8 Planetas</h2>
+      <p>Filtra por tipología, busca por características y haz clic en cualquier planeta para inspeccionar su ficha detallada.</p>
+    </div>
+
+    <!-- Barra de Herramientas: Búsqueda, Filtros y Ordenamiento -->
+    <div class="planets-toolbar">
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input 
+          type="search" 
+          id="planet-search" 
+          placeholder="Buscar por nombre, atmósfera, características..."
+          aria-label="Buscar planeta"
+        >
+      </div>
+
+      <div class="filter-group" role="group" aria-label="Filtrar planetas por tipo">
+        <button class="filter-btn active" data-filter="all">Todos</button>
+        <button class="filter-btn" data-filter="rocoso">Rocosos</button>
+        <button class="filter-btn" data-filter="gaseoso">Gaseosos</button>
+        <button class="filter-btn" data-filter="helado">Helados</button>
+      </div>
+
+      <div class="sort-group">
+        <label for="planet-sort">Ordenar por:</label>
+        <select id="planet-sort" class="styled-select" aria-label="Ordenar planetas">
+          <option value="distance-asc">Distancia al Sol (Cercano a Lejano)</option>
+          <option value="distance-desc">Distancia al Sol (Lejano a Cercano)</option>
+          <option value="size-desc">Tamaño (Mayor a Menor)</option>
+          <option value="size-asc">Tamaño (Menor a Mayor)</option>
+          <option value="moons-desc">Más Lunas</option>
+          <option value="name-asc">Nombre (A - Z)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="toolbar-info">
+      <span id="planets-count" class="planets-count-badge">Mostrando 8 de 8 planetas</span>
+    </div>
+
+    <!-- Grid de Planetas (renderizado dinámicamente) -->
+    <div class="planets-grid">
+      <!-- Se puebla dinámicamente con app.js -->
+    </div>
+  </main>
+
+  <!-- Sección 2: Simulador Orbital 2D en Vivo (Canvas) -->
+  <section class="section-block" id="simulador">
+    <div class="container">
+      <div class="section-title">
+        <h2>Simulador Orbital en Tiempo Real</h2>
+        <p>Observa el movimiento de traslación de cada planeta alrededor del Sol. Ajusta la velocidad orbital o enfoca un planeta específico.</p>
+      </div>
+
+      <div class="simulator-wrapper">
+        <div class="sim-controls-bar">
+          <div class="sim-control-item">
+            <button id="sim-play-pause" class="sim-btn primary-sim">⏸ Pausar</button>
+            <button id="sim-reset" class="sim-btn">🔄 Reiniciar</button>
+          </div>
+
+          <div class="sim-control-item">
+            <label for="sim-speed">Velocidad: <strong id="sim-speed-val">1x</strong></label>
+            <input type="range" id="sim-speed" min="0.2" max="5" step="0.2" value="1" class="styled-range">
+          </div>
+
+          <div class="sim-control-item">
+            <label for="sim-focus">Enfocar Mundo:</label>
+            <select id="sim-focus" class="styled-select">
+              <option value="all">Ver Sistema Completo</option>
+              <option value="mercurio">Mercurio</option>
+              <option value="venus">Venus</option>
+              <option value="tierra">Tierra</option>
+              <option value="marte">Marte</option>
+              <option value="jupiter">Júpiter</option>
+              <option value="saturno">Saturno</option>
+              <option value="urano">Urano</option>
+              <option value="neptuno">Neptuno</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="canvas-container">
+          <canvas id="orbital-canvas" width="900" height="540"></canvas>
+          <div class="sim-hint">✦ Pasa el cursor y observa las trayectorias orbitales sincronizadas</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Sección 3: Calculadora Cósmica de Peso y Edad -->
+  <section class="section-block alt-bg" id="calculadora">
+    <div class="container">
+      <div class="section-title">
+        <h2>Calculadora Cósmica Interplanetaria</h2>
+        <p>¿Cuánto pesarías en la colosal gravedad de Júpiter o en la ligera superficie de Marte? ¿Cuántos años tendrías según el período orbital de cada mundo?</p>
+      </div>
+
+      <form id="calc-form" class="calc-input-panel">
+        <div class="input-card">
+          <label for="calc-weight">Tu peso en la Tierra (kg):</label>
+          <div class="input-unit-wrap">
+            <input type="number" id="calc-weight" value="70" min="5" max="300" step="0.5" required>
+            <span class="unit">kg</span>
+          </div>
+        </div>
+
+        <div class="input-card">
+          <label for="calc-age">Tu edad en la Tierra (años):</label>
+          <div class="input-unit-wrap">
+            <input type="number" id="calc-age" value="25" min="1" max="120" step="1" required>
+            <span class="unit">años</span>
+          </div>
+        </div>
+      </form>
+
+      <div id="calc-results" class="calc-grid">
+        <!-- Generado dinámicamente -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Sección 4: Comparador Cara a Cara de Planetas -->
+  <section class="section-block" id="comparador">
+    <div class="container">
+      <div class="section-title">
+        <h2>Comparador Cara a Cara</h2>
+        <p>Elige dos mundos para contrastar sus dimensiones a escala, gravedad, distancia y características físicas.</p>
+      </div>
+
+      <div class="comparator-wrapper">
+        <div class="comparator-selectors">
+          <div class="selector-box">
+            <label for="compare-planet-a">Primer Planeta:</label>
+            <select id="compare-planet-a" class="styled-select"></select>
+          </div>
+          <div class="vs-badge">VS</div>
+          <div class="selector-box">
+            <label for="compare-planet-b">Segundo Planeta:</label>
+            <select id="compare-planet-b" class="styled-select"></select>
+          </div>
+        </div>
+
+        <div class="comparator-visual-comparison">
+          <div id="compare-view-a" class="compare-visual-card"></div>
+          <div id="compare-view-b" class="compare-visual-card"></div>
+        </div>
+
+        <div class="comparison-table-container">
+          <table class="comparison-table">
+            <thead>
+              <tr>
+                <th>Planeta A</th>
+                <th>Métrica Física</th>
+                <th>Planeta B</th>
+              </tr>
+            </thead>
+            <tbody id="compare-table-body">
+              <!-- Rellenado dinámicamente -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Sección 5: Trivia Astronómica Interactiva -->
+  <section class="section-block alt-bg" id="trivia">
+    <div class="container">
+      <div class="section-title">
+        <h2>Quiz Cósmico</h2>
+        <p>Pon a prueba tus conocimientos sobre astrofísica y el sistema solar. ¡Gana puntos y descubre tu rango espacial!</p>
+      </div>
+
+      <div class="quiz-container">
+        <div class="quiz-header">
+          <span id="quiz-progress" class="quiz-tag">Pregunta 1 de 8</span>
+          <div class="quiz-score-badge">
+            Puntuación: <strong id="quiz-score">0</strong> pts
+          </div>
+        </div>
+
+        <div id="quiz-box" class="quiz-body">
+          <h3 id="quiz-question" class="quiz-question">Cargando desafío estelar...</h3>
+          <div id="quiz-options" class="quiz-options-grid"></div>
+
+          <div id="quiz-feedback" class="quiz-feedback hidden"></div>
+
+          <div class="quiz-actions">
+            <button id="quiz-next-btn" class="quiz-btn primary hidden">Siguiente Pregunta →</button>
+            <button id="quiz-restart-btn" class="quiz-btn secondary hidden">🔄 Jugar de Nuevo</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Curiosidades -->
+  <section class="facts-section" id="datos">
+    <div class="container">
+      <div class="section-title">
+        <h2>¿Sabías que...?</h2>
+        <p>Datos fascinantes confirmados por misiones espaciales sobre nuestro vecindario cósmico.</p>
+      </div>
+      <div class="facts-grid">
+        <div class="fact-card">
+          <h4>El peso descomunal del Sol</h4>
+          <p>El Sol contiene más del 99.8% de toda la masa del sistema solar entero. Todos los planetas, asteroides y cometas juntos representan apenas una fracción residual.</p>
+        </div>
+        <div class="fact-card">
+          <h4>Un día más largo que un año</h4>
+          <p>Venus rota tan despacio que tarda 243 días terrestres en girar sobre su propio eje, mientras que completa una vuelta al Sol en 225 días. ¡Su día dura más que su año!</p>
+        </div>
+        <div class="fact-card">
+          <h4>Océanos ocultos con potencial biológico</h4>
+          <p>Lunas como Europa (en Júpiter) y Encélado (en Saturno) esconden océanos subterráneos líquidos bajo cortezas de hielo, con géiseres activos y compuestos orgánicos.</p>
+        </div>
+        <div class="fact-card">
+          <h4>El silencio absoluto del vacío</h4>
+          <p>En el espacio exterior no hay aire ni moléculas para propagar ondas de sonido. A pesar de las colosales tormentas de Júpiter o erupciones solares, todo ocurre en absoluto silencio acústico.</p>
+        </div>
+        <div class="fact-card">
+          <h4>Tormentas que devoran planetas</h4>
+          <p>La Gran Mancha Roja de Júpiter es un vórtice colosal que ha girado ininterrumpidamente durante más de 300 años. Dentro de ella cabría la Tierra entera sin rozar sus bordes.</p>
+        </div>
+        <div class="fact-card">
+          <h4>Saturno flotaría en el agua</h4>
+          <p>A pesar de su inmenso volumen, la densidad media de Saturno es de apenas 0.687 g/cm³. Si pudieras encontrar una bañera con agua lo bastante colosal, ¡Saturno flotaría plácidamente!</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-logo">
+        <span class="icon">🪐</span>
+        <strong>CosmoGuide</strong>
+      </div>
+      <p>&copy; 2026 CosmoGuide. Desarrollado con tecnologías web modernas para entusiastas de la astronomía y la exploración espacial.</p>
+      <div class="footer-links">
+        <a href="#intro">Inicio</a>
+        <a href="#planetas">Planetas</a>
+        <a href="#simulador">Simulador</a>
+        <a href="#calculadora">Calculadora</a>
+        <a href="#trivia">Trivia</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- =========================================================================
+       ELEMENTOS INTERACTIVOS GLOBALES (MODAL, COSMOBOT IA, SCROLL TOP)
+       ========================================================================= -->
+
+  <!-- Modal Detallado de Planeta (<dialog>) -->
+  <dialog id="planet-detail-modal" class="cosmic-dialog" aria-labelledby="modal-planet-title">
+    <div class="dialog-content">
+      <button id="modal-close-btn" class="dialog-close-btn" aria-label="Cerrar modal">✕</button>
+
+      <div class="modal-header">
+        <div class="modal-planet-visual"></div>
+        <div class="modal-header-info">
+          <span id="modal-planet-tag" class="planet-tag"></span>
+          <h2 id="modal-planet-title">Nombre del Planeta</h2>
+          <p id="modal-planet-desc" class="modal-lead-desc"></p>
+          <button id="modal-sound-btn" class="cosmic-tone-btn">
+            <span>🔊</span> Escuchar Frecuencia Armónica
+          </button>
+        </div>
+      </div>
+
+      <div class="modal-body-content">
+        <div class="modal-section">
+          <h3>Ficha Técnica Astronómica</h3>
+          <div id="modal-planet-specs-grid" class="modal-specs-grid"></div>
+        </div>
+
+        <div class="modal-section fact-highlight-box">
+          <h3>💡 Curiosidad Singular</h3>
+          <p id="modal-planet-fact"></p>
+        </div>
+
+        <div class="modal-section">
+          <h3>Misiones y Exploración Espacial Clave</h3>
+          <ul id="modal-planet-missions" class="missions-list"></ul>
+        </div>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- CosmoBot: Asistente IA Espacial (Flotante) -->
+  <div id="cosmobot-widget" class="cosmobot-container">
+    <button id="cosmobot-toggle-btn" class="cosmobot-fab" aria-label="Abrir asistente CosmoBot">
+      <span class="fab-icon">🤖</span>
+      <span class="fab-badge">IA</span>
+    </button>
+
+    <aside id="cosmobot-window" class="cosmobot-window" aria-label="Ventana de chat de CosmoBot">
+      <div class="cosmobot-header">
+        <div class="bot-info">
+          <span class="bot-avatar">🤖</span>
+          <div>
+            <h4>CosmoBot</h4>
+            <span id="cosmobot-status-badge" class="bot-status" title="Estado de la conexión">
+              <span class="status-dot"></span> Verificando conexión...
+            </span>
+          </div>
+        </div>
+        <div class="header-actions">
+          <button id="cosmobot-settings-btn" class="icon-btn" title="Configurar Ollama" aria-label="Configurar Ollama">⚙️</button>
+          <button id="cosmobot-close-btn" class="icon-btn" aria-label="Cerrar ventana de chat">✕</button>
+        </div>
+      </div>
+
+      <!-- Sugerencias rápidas (Chips) -->
+      <div class="cosmobot-quick-chips">
+        <button class="cosmobot-chip" data-question="¿Cuál es el planeta más caliente?">🔥 Planeta más caliente</button>
+        <button class="cosmobot-chip" data-question="¿Por qué llueven diamantes en Neptuno?">💎 Lluvia de diamantes</button>
+        <button class="cosmobot-chip" data-question="¿Cuánto se tarda en viajar a Marte?">🔴 Viaje a Marte</button>
+        <button class="cosmobot-chip" data-question="¿Por qué Plutón no es considerado planeta?">✨ ¿Y Plutón?</button>
+      </div>
+
+      <!-- Historial de mensajes -->
+      <div id="cosmobot-messages" class="cosmobot-messages">
+        <div class="cosmobot-msg msg-bot">
+          <div class="msg-avatar">🤖</div>
+          <div class="msg-bubble">
+            ¡Hola! Soy <strong>CosmoBot</strong>, tu asistente de exploración cósmica. Puedes preguntarme cualquier detalle sobre planetas, órbitas, lunas, misiones espaciales o física astronómica. ¡Incluso puedo conectarme a tu modelo local de <strong>Ollama</strong>! 🚀
+          </div>
+        </div>
+      </div>
+
+      <!-- Formulario de Entrada -->
+      <form id="cosmobot-form" class="cosmobot-input-area">
+        <input 
+          type="text" 
+          id="cosmobot-input" 
+          placeholder="Haz una pregunta sobre el cosmos..." 
+          autocomplete="off"
+          required
+        >
+        <button type="submit" class="send-btn" aria-label="Enviar mensaje">➤</button>
+      </form>
+    </aside>
+  </div>
+
+  <!-- Diálogo de Configuración de Ollama -->
+  <dialog id="cosmobot-settings-dialog" class="cosmic-dialog settings-modal">
+    <div class="settings-modal-content">
+      <h3>Configuración de CosmoBot (Ollama)</h3>
+      <p class="settings-desc">
+        CosmoBot puede conectarse directamente a tu servidor local de Ollama para usar modelos LLM avanzados (como llama3, mistral, gemma o phi3), o funcionar en modo local integrado.
+      </p>
+
+      <div class="setting-field">
+        <label for="setting-ollama-url">URL del Servidor Ollama:</label>
+        <input type="url" id="setting-ollama-url" value="http://localhost:11434" placeholder="http://localhost:11434">
+      </div>
+
+      <div class="setting-field">
+        <label for="setting-ollama-model">Nombre del Modelo:</label>
+        <input type="text" id="setting-ollama-model" value="llama3" placeholder="llama3, mistral, gemma...">
+      </div>
+
+      <div class="settings-actions">
+        <button id="cosmobot-save-settings" class="cta-button primary">Guardar y Reconectar</button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- Botón Scroll to Top -->
+  <button id="scroll-top-btn" class="scroll-top-btn" aria-label="Volver arriba">↑</button>
+
+  <!-- Script principal interactivo -->
+  <script src="app.js"></script>
+</body>
+</html>
